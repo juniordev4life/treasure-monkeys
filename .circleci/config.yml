@@ -1,7 +1,34 @@
 version: 2.1
 orbs:
-  node: circleci/node@3.0.0
+  codecov: codecov/codecov@1.0.2
+jobs:
+  Build:
+    docker:
+      - image: alpine:3.7
+    steps:
+      - checkout
+      - run:
+          name: Install and Build
+          command: |
+            yarn install && yarn build
+      - run:
+          name: Check dist folder
+          command: |
+            cd ./dist
+            ls -la
+  Unit-Tests:
+    docker:
+      - image: alpine:3.7
+    steps:
+      - run:
+          name: Running Unit tests
+          command: |
+            yarn install
+            yarn test:unit
+
 workflows:
-  node-tests:
+  version: 2
+  Buid_and_Unit_Tests:
     jobs:
-      - node/test
+      - Build
+      - Unit-Tests
