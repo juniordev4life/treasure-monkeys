@@ -4,7 +4,7 @@ orbs:
 jobs:
   Build:
     docker:
-      - image: alpine:3.7
+      - image: node:15
     steps:
       - checkout
       - run:
@@ -18,7 +18,7 @@ jobs:
             ls -la
   Unit-Tests:
     docker:
-      - image: alpine:3.7
+      - image: node:15
     steps:
       - run:
           name: Running Unit tests
