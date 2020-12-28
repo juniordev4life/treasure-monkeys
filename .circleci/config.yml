@@ -23,8 +23,10 @@ jobs:
       - run:
           name: Running Unit tests
           command: |
-            yarn install
-            yarn test:unit
+            yarn install && yarn test:unit
+      - codecov/upload:
+          file: './coverage/clover.xml'
+          token: 8364ce65-0448-4611-876b-5adafa526a65
 
 workflows:
   version: 2
