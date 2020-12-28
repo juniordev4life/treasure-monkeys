@@ -56,7 +56,7 @@ workflows:
       - install
       - build:
           requires:
-            - Install
+            - install
       - unit-tests:
           requires:
-            - Install
+            - install
