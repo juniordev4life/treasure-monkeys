@@ -56,7 +56,7 @@ jobs:
           token: 8364ce65-0448-4611-876b-5adafa526a65
   code-check:
     docker:
-      - image: cimg/base:2020.01
+      - image: node:15
     steps:
       - checkout
       - sonarcloud/scan
