@@ -1,8 +1,10 @@
 version: 2.1
+
 orbs:
   codecov: codecov/codecov@1.1.3
   cypress: cypress-io/cypress@1
   sonarcloud: sonarsource/sonarcloud@1.0.2
+
 jobs:
   install:
     docker:
@@ -62,27 +64,6 @@ jobs:
     steps:
       - checkout
       - sonarcloud/scan
-  e2e-tests:
-    docker:
-      - image: cypress/base:10
-        environment:
-          ## this enables colors in the output
-          TERM: xterm
-    steps:
-      - checkout
-      - restore_cache:
-          keys:
-            - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-      - run:
-          name: Install Dependencies
-          command: yarn install --frozen-lockfile
-      - save_cache:
-          key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-          paths:
-            - ~/.cache  ## cache both yarn and Cypress!
-      - run:
-          name: Start tests
-          command: yarn test:e2e
 
 workflows:
   version: 2
@@ -99,13 +80,10 @@ workflows:
           requires:
             - install
           context: SonarCloud
-      - e2e-tests:
+      - cypress/run:
           requires:
-            - install
-      # - cypress/run:
-      #     requires:
-      #         - install
-      #     cache-key: 'yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}'
-      #     yarn: true
-      #     start: yarn serve
-      #     wait-on: 'http://localhost:8080'
+              - install
+          cache-key: 'yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}'
+          yarn: true
+          start: yarn serve
+          wait-on: 'http://localhost:8080'
