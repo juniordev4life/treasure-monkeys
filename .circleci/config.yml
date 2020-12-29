@@ -10,7 +10,6 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            # when lock file changes, use increasingly general patterns to restore cache
             - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
             - yarn-packages-v1-{{ .Branch }}-
             - yarn-packages-v1-
@@ -22,6 +21,7 @@ jobs:
       - save_cache:
           paths:
             - ~/.cache/yarn
+            - node_modules
           key: yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
   build:
     docker:
@@ -30,7 +30,6 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            # when lock file changes, use increasingly general patterns to restore cache
             - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
             - yarn-packages-v1-{{ .Branch }}-
             - yarn-packages-v1-
@@ -45,24 +44,39 @@ jobs:
             cd ./dist
             ls -la
       - sonarcloud/scan
-  # unit-tests:
-  #   docker:
-  #     - image: node:15
-  #   steps:
-  #     - checkout
-  #     - restore_cache:
-  #         keys:
-  #           # when lock file changes, use increasingly general patterns to restore cache
-  #           - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-  #           - yarn-packages-v1-{{ .Branch }}-
-  #           - yarn-packages-v1-
-  #     - run:
-  #         name: Running Unit tests
-  #         command: |
-  #           yarn install && yarn test:unit
-  #     - codecov/upload:
-  #         file: './coverage/clover.xml'
-  #         token: 8364ce65-0448-4611-876b-5adafa526a65
+  unit-tests:
+    docker:
+      - image: node:15
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-packages-v1-{{ .Branch }}-
+            - yarn-packages-v1-
+      - run:
+          name: Running Unit tests
+          command: |
+            yarn install && yarn test:unit
+      - codecov/upload:
+          file: './coverage/clover.xml'
+          token: 8364ce65-0448-4611-876b-5adafa526a65
+  code-check:
+    docker:
+      - image: cimg/base:2020.01
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - yarn-packages-v1-{{ .Branch }}-
+            - yarn-packages-v1-
+      - run:
+          name: Install and Build
+          command: |
+            yarn install
+            yarn build
+      - sonarcloud/scan
 
 workflows:
   version: 2
@@ -72,6 +86,9 @@ workflows:
       - build:
           requires:
             - install
-      # - unit-tests:
-      #     requires:
-      #       - install
+      - unit-tests:
+          requires:
+            - install
+      - code-check:
+          requires:
+            - install
