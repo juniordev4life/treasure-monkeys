@@ -11,8 +11,6 @@ jobs:
       - restore_cache:
           keys:
             - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-packages-v1-{{ .Branch }}-
-            - yarn-packages-v1-
       - run:
           name: Install dependencies
           command: |
@@ -31,8 +29,6 @@ jobs:
       - restore_cache:
           keys:
             - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-packages-v1-{{ .Branch }}-
-            - yarn-packages-v1-
       - run:
           name: Install and Build
           command: |
@@ -51,8 +47,6 @@ jobs:
       - restore_cache:
           keys:
             - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-packages-v1-{{ .Branch }}-
-            - yarn-packages-v1-
       - run:
           name: Running Unit tests
           command: |
