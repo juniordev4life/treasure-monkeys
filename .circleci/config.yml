@@ -79,6 +79,7 @@ workflows:
             - install
           context: SonarCloud
       - cypress/run:
+          requires:
+              - install
           yarn: true
           cache-key: 'yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}'
-          record: true
