@@ -65,7 +65,7 @@ jobs:
 
 workflows:
   version: 2
-  Buid/Check/Tests:
+  Build_Check_Tests:
     jobs:
       - install
       - build:
