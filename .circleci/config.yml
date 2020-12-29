@@ -1,6 +1,7 @@
 version: 2.1
 orbs:
   codecov: codecov/codecov@1.1.3
+  cypress: cypress-io/cypress@1
   sonarcloud: sonarsource/sonarcloud@1.0.2
 jobs:
   install:
@@ -14,7 +15,7 @@ jobs:
       - run:
           name: Install dependencies
           command: |
-            yarn install
+            yarn install --frozen-lockfile
       
       - save_cache:
           paths:
@@ -32,7 +33,7 @@ jobs:
       - run:
           name: Install and Build
           command: |
-            yarn install
+            yarn install --frozen-lockfile
             yarn build
       - run:
           name: Check dist folder
@@ -50,7 +51,8 @@ jobs:
       - run:
           name: Running Unit tests
           command: |
-            yarn install && yarn test:unit
+            yarn install --frozen-lockfile
+            yarn test:unit
       - codecov/upload:
           file: './coverage/clover.xml'
           token: 8364ce65-0448-4611-876b-5adafa526a65
@@ -63,7 +65,7 @@ jobs:
 
 workflows:
   version: 2
-  Buid_and_Unit_Tests:
+  Buid/Check/Tests:
     jobs:
       - install
       - build:
@@ -76,3 +78,7 @@ workflows:
           requires:
             - install
           context: SonarCloud
+      - cypress/run:
+          yarn: true
+          cache-key: 'yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}'
+          record: true
