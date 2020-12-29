@@ -43,7 +43,6 @@ jobs:
           command: |
             cd ./dist
             ls -la
-      - sonarcloud/scan
   unit-tests:
     docker:
       - image: node:15
@@ -66,16 +65,6 @@ jobs:
       - image: cimg/base:2020.01
     steps:
       - checkout
-      - restore_cache:
-          keys:
-            - yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - yarn-packages-v1-{{ .Branch }}-
-            - yarn-packages-v1-
-      - run:
-          name: Install and Build
-          command: |
-            yarn install
-            yarn build
       - sonarcloud/scan
 
 workflows:
