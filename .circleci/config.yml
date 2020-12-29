@@ -81,5 +81,7 @@ workflows:
       - cypress/run:
           requires:
               - install
-          yarn: true
           cache-key: 'yarn-packages-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}'
+          yarn: true
+          start: yarn serve
+          wait-on: 'http://localhost:8080'
