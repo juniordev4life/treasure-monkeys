@@ -75,3 +75,4 @@ workflows:
       - code-check:
           requires:
             - install
+          context: SonarCloud
