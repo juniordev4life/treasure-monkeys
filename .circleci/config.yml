@@ -81,9 +81,6 @@ jobs:
           paths:
             - ~/.cache  ## cache both yarn and Cypress!
       - run:
-          name: Start Server
-          command: yarn serve
-      - run:
           name: Start tests
           command: yarn test:e2e
 
