@@ -69,17 +69,33 @@ workflows:
   version: 2
   Build_Check_Tests:
     jobs:
-      - install
+      - install:
+          filters:
+              branches:
+                only:
+                  - main
       - build:
           requires:
             - install
+          filters:
+              branches:
+                only:
+                  - main
       - unit-tests:
           requires:
             - install
+          filters:
+              branches:
+                only:
+                  - main
       - code-check:
           requires:
             - install
           context: SonarCloud
+          filters:
+              branches:
+                only:
+                  - main
       - cypress/run:
           requires:
               - install
@@ -87,3 +103,7 @@ workflows:
           yarn: true
           start: yarn serve
           wait-on: 'http://localhost:8080'
+          filters:
+              branches:
+                only:
+                  - main
